@@ -27,11 +27,11 @@ def drives():
     if request.method == 'GET':
         request_as_dict = request.get_json(force=True)
         db, cursor = connection.get()
-        return jsonify({"response": yield_query_result(db, cursor, get_last_driver_id(**request_as_dict))})
+        return jsonify({"response": yield_query_result(db, cursor, get_drive_data_by_drive_id(**request_as_dict))})
     if request.method == 'POST':
         request_as_dict = request.get_json(force=True)
         db, cursor = connection.get()
-        return jsonify({"response": execute_query(db, cursor, update_drive(**request_as_dict))})
+        return jsonify({"response": execute_query(db, cursor, get_drive_data_by_drive_id(**request_as_dict))})
 
 
 def start_server():
