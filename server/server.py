@@ -12,14 +12,51 @@ connection = SQLConnection()
 @app.route('/users/', methods=['GET', 'POST'])
 def users():
     if request.method == 'GET':
-        request_as_dict = request.get_json(force=True)
-        db, cursor = connection.get()
-        return jsonify({"response": yield_query_result(db, cursor, check_user(**request_as_dict))})
+        # get username from request
+        username = request.args.get('username')
+        # get password from request
+        password = request.args.get('password')
+        # check if only username is provided
+        if username and not password:
+            db, cursor = connection.get()
+            response = yield_query_result(db, cursor, check_username(username))
+            # if user exists, return True
+            if response:
+                return jsonify({"response": True})
+            # if user does not exist, return False
+            else:
+                return jsonify({"response": False})
+        # check if username and password are provided
+        elif username and password:
+            db, cursor = connection.get()
+            response = yield_query_result(db, cursor, check_user(username, password))
+            # if user password is correct, return user id
+            if response:
+                response_str = str(response[0][0])
+                return jsonify({"response": response_str})
+            # if user password is incorrect, return False
+            else:
+                return jsonify({"response": False})
+        # if username and password are not provided, return 400
+        else:
+            return jsonify({"response": False, "error": "Bad request"}), 400
 
     if request.method == 'POST':
         request_as_dict = request.get_json(force=True)
         db, cursor = connection.get()
-        return jsonify({"response": execute_query(db, cursor, insert_user(**request_as_dict))})
+        if 'username' in request_as_dict and 'password' in request_as_dict and len(request_as_dict) == 2:
+            response = execute_query(db, cursor, insert_user(**request_as_dict))
+            if response:
+                response = yield_query_result(db, cursor, get_user_id_by_username(request_as_dict.get("username")))
+                if response:
+                    response_str = str(response[0]['id'])
+                    return jsonify({"response": response_str})
+                else:
+                    return jsonify({"response": False})
+            else:
+                return jsonify({"response": False})
+        else:
+            return jsonify({"response": False, "error": "Bad request"}), 400
 
 
 @app.route('/drives/', methods=['GET', 'POST'])

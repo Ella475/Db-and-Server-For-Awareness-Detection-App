@@ -7,7 +7,7 @@ def insert_user(username, password):
 
 
 def check_user(username, password):
-    return f'SELECT * FROM users WHERE users.Username ="{username}" AND users.Password ="{password}"'
+    return f'SELECT users.id FROM users WHERE users.Username ="{username}" AND users.Password ="{password}"'
 
 
 def check_username(username):
