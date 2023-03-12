@@ -32,7 +32,7 @@ def users():
             response = yield_query_result(db, cursor, check_user(username, password))
             # if user password is correct, return user id
             if response:
-                response_str = str(response[0][0])
+                response_str = str(response[0]['id'])
                 return jsonify({"response": response_str})
             # if user password is incorrect, return False
             else:
