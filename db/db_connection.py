@@ -50,6 +50,8 @@ def disconnect(db, cursor):
 
 
 def execute_query(db, cursor, query, commit: bool = True, val=None):
+    print(query)
+
     try:
         if not val:
             cursor.execute(query)
@@ -72,6 +74,5 @@ def yield_query_result(db, cursor, query, max_rows: int = None):
     except Error as e:
         print(f"The error '{e}' occurred")
         return None
-    print(query)
 
     return None if not r else r if max_rows is None else r[:max_rows]

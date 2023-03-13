@@ -9,7 +9,7 @@ app = Flask(__name__)
 connection = SQLConnection()
 
 
-@app.route('/users/', methods=['GET', 'POST'])
+@app.route('/users', methods=['GET', 'POST'])
 def users():
     if request.method == 'GET':
         # get username from request
@@ -59,7 +59,7 @@ def users():
             return jsonify({"response": False, "error": "Bad request"}), 400
 
 
-@app.route('/drives/', methods=['GET', 'POST'])
+@app.route('/drives', methods=['GET', 'POST'])
 def drives():
     if request.method == 'GET':
         request_as_dict = request.get_json(force=True)
