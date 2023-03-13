@@ -73,7 +73,7 @@ def drives():
 
 def start_server():
     connection.start()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
 
 
 def stop_server():
