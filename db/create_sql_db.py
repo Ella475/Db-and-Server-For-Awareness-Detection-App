@@ -37,19 +37,19 @@ def create_tables_queries():
             );"""
     queries.append(drives_query)
 
-    drives_query = \
+    drive_data_query = \
         """
         CREATE TABLE drive_data (
-          id INT(11) NOT NULL AUTO_INCREMENT,
+          id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
           drive_id INT(11) NOT NULL,
-          timestamp DATETIME NOT NULL,
-          attention_level INT(11) NOT NULL,
-          is_eye_closed BOOLEAN NOT NULL,
-          head_pose INT(11) NOT NULL,
-          PRIMARY KEY (id),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          awareness_percentage INT(11) NOT NULL,
+          asleep BOOLEAN NOT NULL,
+          inattentive BOOLEAN NOT NULL,
           FOREIGN KEY (drive_id) REFERENCES drives(id)
-        );"""
-    queries.append(drives_query)
+        );
+        """
+    queries.append(drive_data_query)
 
     return queries
 

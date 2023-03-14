@@ -14,13 +14,13 @@ def check_username(username):
     return f'SELECT * FROM users WHERE users.Username ="{username}"'
 
 
-def insert_drive(driver_id):
-    return f'INSERT INTO drives (driver_id) VALUES ({driver_id})'
+def insert_drive(user_id):
+    return f'INSERT INTO drives (driver_id) VALUES ({user_id})'
 
 
-def insert_drive_data(drive_id, timestamp, attention_level, is_eye_closed, head_pose):
-    return f'INSERT INTO drive_data (Drive_ID, Timestamp, Attention_Level, Is_Eye_Closed, Head_Pose) ' \
-           f'VALUES ({drive_id}, "{timestamp}", {attention_level}, {is_eye_closed}, {head_pose})'
+def insert_drive_data(drive_id, awareness_percentage, asleep, inattentive):
+    return f'INSERT INTO drive_data (Drive_ID, Awareness_Percentage, Asleep, Inattentive) ' \
+           f'VALUES ({drive_id}, {awareness_percentage}, {asleep}, {inattentive})'
 
 
 def get_drives_by_user_id(user_id):
@@ -38,5 +38,9 @@ def get_user_id_by_username(username):
 def get_last_drive_data(user_id):
     return f'SELECT * FROM drive_data WHERE drive_data.Drive_ID = ' \
            f'(SELECT MAX(drives.id) FROM drives WHERE drives.driver_id = {user_id})'
+
+
+def get_last_drive_id(user_id):
+    return f'SELECT MAX(drives.id) FROM drives WHERE drives.driver_id = {user_id}'
 
 
