@@ -42,7 +42,6 @@ def create_tables_queries():
         CREATE TABLE drive_data (
           id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
           drive_id INT(11) NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           awareness_percentage INT(11) NOT NULL,
           asleep BOOLEAN NOT NULL,
           inattentive BOOLEAN NOT NULL,

@@ -14,6 +14,10 @@ def check_username(username):
     return f'SELECT * FROM users WHERE users.Username ="{username}"'
 
 
+def get_user_id_by_username(username):
+    return f'SELECT users.id FROM users WHERE users.Username = "{username}"'
+
+
 def insert_drive(user_id):
     return f'INSERT INTO drives (driver_id) VALUES ({user_id})'
 
@@ -31,16 +35,5 @@ def get_drive_data_by_drive_id(drive_id):
     return f'SELECT * FROM drive_data WHERE drive_data.Drive_ID = {drive_id}'
 
 
-def get_user_id_by_username(username):
-    return f'SELECT users.id FROM users WHERE users.Username = "{username}"'
-
-
-def get_last_drive_data(user_id):
-    return f'SELECT * FROM drive_data WHERE drive_data.Drive_ID = ' \
-           f'(SELECT MAX(drives.id) FROM drives WHERE drives.driver_id = {user_id})'
-
-
 def get_last_drive_id(user_id):
     return f'SELECT MAX(drives.id) FROM drives WHERE drives.driver_id = {user_id}'
-
-

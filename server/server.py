@@ -82,36 +82,38 @@ def drives():
         else:
             return jsonify({"response": False})
 
-    # if request.method == 'GET':
-    #     # get userId from request
-    #     userid = request.args.get('user_id')
-    #     db, cursor = connection.get()
-    #     response = yield_query_result(db, cursor, get_drives_by_user_id(userid))
-    #     # if user exists, return drive id
-    #     if response:
-    #         # return all drive ids
-    #         response_str = str(response)
-    #         return jsonify({"response": response_str})
-    #     # if user does not exist, return False
-    #     else:
-    #         return jsonify({"response": False})
+    if request.method == 'GET':
+        # get userId from request
+        userid = request.args.get('user_id')
+        db, cursor = connection.get()
+        response = yield_query_result(db, cursor, get_drives_by_user_id(userid))
+        # if user exists, return drive id
+        if response:
+            # return all drive ids
+            response_str = str(response)
+            return jsonify({"response": response_str})
+        # if user does not exist, return False
+        else:
+            return jsonify({"response": False})
 
 
 @app.route('/drives_data', methods=['GET', 'POST'])
 def drives_data():
-    # if request.method == 'GET':
-    #     # get driveId from request
-    #     drive_id = request.args.get('drive_id')
-    #     db, cursor = connection.get()
-    #     response = yield_query_result(db, cursor, get_drive_data_by_drive_id(drive_id))
-    #     # if user exists, return drive id
-    #     if response:
-    #         # return all drive data
-    #         response_str = str(response)
-    #         return jsonify({"response": response_str})
-    #     # if user does not exist, return False
-    #     else:
-    #         return jsonify({"response": False})
+    if request.method == 'GET':
+        if 'drive_id' in request.args:
+            arg = request.args.get('drive_id')
+            func = get_drive_data_by_drive_id
+        else:
+            return jsonify({"response": False, "error": "Bad request"}), 400
+
+        db, cursor = connection.get()
+        response = yield_query_result(db, cursor, func(arg))
+        if response:
+            response = str(response)
+            return jsonify({"success": True, "response": response})
+        # if user does not exist, return False
+        else:
+            return jsonify({"success": False})
 
     if request.method == 'POST':
         # get driveId, awareness_percentage, asleep, head_pose from request
@@ -120,8 +122,8 @@ def drives_data():
             return jsonify({"response": False, "error": "Bad request"}), 400
 
         db, cursor = connection.get()
-        response = yield_query_result(db, cursor, insert_drive_data(**request_as_dict))
-        # if user exists, return drive id
+        response = execute_query(db, cursor, insert_drive_data(**request_as_dict))
+        print(response)
         if response:
             # return all drive data
             response_str = str(response)
@@ -139,7 +141,3 @@ def start_server():
 def stop_server():
     connection.stop()
 
-# if __name__ == '__main__':
-#     connection.start()
-#     app.run(debug=True)
-#     connection.stop()
