@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, request, jsonify
 
 from db.db_connection import yield_query_result, execute_query
@@ -69,7 +71,8 @@ def drives():
             return jsonify({"response": False, "error": "Bad request"}), 400
 
         db, cursor = connection.get()
-        response = execute_query(db, cursor, insert_drive(**request_as_dict))
+        time = datetime.now().strftime("%d.%m.%Y %H:%M")
+        response = execute_query(db, cursor, insert_drive(**request_as_dict, time=time))
         if response:
             response = yield_query_result(db, cursor, get_last_drive_id(**request_as_dict))
             if response:

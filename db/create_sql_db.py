@@ -32,6 +32,7 @@ def create_tables_queries():
         """CREATE TABLE drives (
               id INT(11) NOT NULL AUTO_INCREMENT,
               driver_id INT(11) NOT NULL,
+              time VARCHAR(255) NOT NULL,
               PRIMARY KEY (id),
               FOREIGN KEY (driver_id) REFERENCES users(id)
             );"""

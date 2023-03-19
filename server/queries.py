@@ -18,8 +18,8 @@ def get_user_id_by_username(username):
     return f'SELECT users.id FROM users WHERE users.Username = "{username}"'
 
 
-def insert_drive(user_id):
-    return f'INSERT INTO drives (driver_id) VALUES ({user_id})'
+def insert_drive(user_id, time):
+    return f'INSERT INTO drives (driver_id, time) VALUES ({user_id}, "{time}")'
 
 
 def insert_drive_data(drive_id, awareness_percentage, asleep, inattentive):
