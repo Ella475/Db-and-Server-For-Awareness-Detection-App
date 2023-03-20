@@ -1,2 +1,2 @@
-/credentials.json
-/data/*.csv
+/.idea
+/__pycache__
