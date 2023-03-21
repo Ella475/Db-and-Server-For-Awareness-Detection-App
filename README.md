@@ -1,9 +1,7 @@
 # Db-and-Server-For-Awareness-Detection-App
 ## Description
-This is the server and database for the Driver Awareness Monitoring app. The app can be found here:
-```bash
-git clone https://github.com/Ella475/Driver-Awareness-Monitoring.git
-```
+This is the server and database for the Driver Awareness Monitoring app. The app can be found [here](https://github.com/Ella475/Driver-Awareness-Monitoring)
+
 ## Installation
 1. Download MySQL 
 2. Change the username and password in the credentials.json to your username and password in MySQL.
