@@ -1,6 +1,8 @@
 # Db-and-Server-For-Awareness-Detection-App
 ## Description
-This is the server and database for the Driver Awareness Monitoring app. The app can be found [here](https://github.com/Ella475/Driver-Awareness-Monitoring)
+This is a server and database system designed to support the Driver Awareness Monitoring app.</br>
+The app, which can be accessed through its GitHub repository [here](https://github.com/Ella475/Driver-Awareness-Monitoring), uses a Python-based Flask server to interact with a MySQL database.</br>
+The database is created and managed using Python code.
 
 ## Installation
 1. Download MySQL 
