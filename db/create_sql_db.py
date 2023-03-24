@@ -1,17 +1,18 @@
-import pandas as pd
-from tqdm import tqdm
-
 from db.db_connection import connect_to_db, disconnect, execute_query
 
 
 def create_tables(db, cursor, tables_queries):
-    for query in tables_queries:
-        execute_query(db, cursor, query)
-
     execute_query(db, cursor, "SHOW TABLES", commit=False)
+    existing_table_names = [table_name[0] for table_name in cursor]
+    print("Existing tables:")
+    for table_name in existing_table_names:
+        print(table_name)
+
     print("Created tables:")
-    for table_name in cursor:
-        print(table_name[0])
+    for table_name, query in tables_queries:
+        if table_name not in existing_table_names:
+            execute_query(db, cursor, query)
+            print(table_name)
 
 
 def create_tables_queries():
@@ -24,7 +25,7 @@ def create_tables_queries():
               password VARCHAR(255) NOT NULL,
               PRIMARY KEY (id)
             );"""
-    queries.append(users_query)
+    queries.append(('users', users_query))
 
     drives_query = \
         """CREATE TABLE drives (
@@ -34,7 +35,7 @@ def create_tables_queries():
               PRIMARY KEY (id),
               FOREIGN KEY (user_id) REFERENCES users(id)
             );"""
-    queries.append(drives_query)
+    queries.append(('drives', drives_query))
 
     drive_data_query = \
         """
@@ -47,7 +48,7 @@ def create_tables_queries():
           FOREIGN KEY (drive_id) REFERENCES drives(id)
         );
         """
-    queries.append(drive_data_query)
+    queries.append(('drive_data', drive_data_query))
 
     supervisors_query = \
         """CREATE TABLE supervisors (
@@ -56,7 +57,7 @@ def create_tables_queries():
               password VARCHAR(255) NOT NULL,
               PRIMARY KEY (id)
             );"""
-    queries.append(supervisors_query)
+    queries.append(('supervisors', supervisors_query))
 
     supervisors_users_query = \
         """CREATE TABLE supervised_users (
@@ -67,25 +68,13 @@ def create_tables_queries():
               FOREIGN KEY (user_id) REFERENCES users(id),
               FOREIGN KEY (supervisor_id) REFERENCES supervisors(id)
             );"""
-    queries.append(supervisors_users_query)
+    queries.append(('supervised_users', supervisors_users_query))
 
     return queries
 
 
-def insert_records(db, cursor, queries):
-    for k, (table, query) in enumerate(queries.items()):
-        print()
-        print('Inserting records to table: ' + table)
-        table_path = query[1]
-        table_query = query[0]
-
-        for i, chunk in tqdm(enumerate(pd.read_csv(table_path, chunksize=1000))):
-            records = chunk.where(pd.notnull(chunk), None).to_records(index=False).tolist()
-            execute_query(db, cursor, table_query, True, records)
-
-
-def create_driver_awareness_db():
-    db, cursor = connect_to_db(delete_if_exist=True)
+def create_driver_awareness_db(delete_if_exist=True):
+    db, cursor = connect_to_db(delete_if_exist=delete_if_exist)
     tables_queries = create_tables_queries()
     create_tables(db, cursor, tables_queries)
     disconnect(db, cursor)
