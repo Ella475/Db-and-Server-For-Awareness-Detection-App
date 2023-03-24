@@ -1,5 +1,3 @@
-import csv
-
 import pandas as pd
 from tqdm import tqdm
 
@@ -31,10 +29,10 @@ def create_tables_queries():
     drives_query = \
         """CREATE TABLE drives (
               id INT(11) NOT NULL AUTO_INCREMENT,
-              driver_id INT(11) NOT NULL,
+              user_id INT(11) NOT NULL,
               time VARCHAR(255) NOT NULL,
               PRIMARY KEY (id),
-              FOREIGN KEY (driver_id) REFERENCES users(id)
+              FOREIGN KEY (user_id) REFERENCES users(id)
             );"""
     queries.append(drives_query)
 
@@ -50,6 +48,26 @@ def create_tables_queries():
         );
         """
     queries.append(drive_data_query)
+
+    supervisors_query = \
+        """CREATE TABLE supervisors (
+              id INT(11) NOT NULL AUTO_INCREMENT,
+              username VARCHAR(255) NOT NULL,
+              password VARCHAR(255) NOT NULL,
+              PRIMARY KEY (id)
+            );"""
+    queries.append(supervisors_query)
+
+    supervisors_users_query = \
+        """CREATE TABLE supervised_users (
+              id INT(11) NOT NULL AUTO_INCREMENT,
+                supervisor_id INT(11) NOT NULL,
+              user_id INT(11) NOT NULL,
+              PRIMARY KEY (id),
+              FOREIGN KEY (user_id) REFERENCES users(id),
+              FOREIGN KEY (supervisor_id) REFERENCES supervisors(id)
+            );"""
+    queries.append(supervisors_users_query)
 
     return queries
 
