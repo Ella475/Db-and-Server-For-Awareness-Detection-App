@@ -5,11 +5,17 @@ This is the server and database for the Driver Awareness Monitoring app. The app
 ## Installation
 1. Download MySQL 
 2. Change the username and password in the credentials.json to your username and password in MySQL.
-3. Create the database by running the following command in the terminal:
+3. Install requirements:
+```bash
+pip install -r requirements.txt
+```
+4. Create the database by running the following command in the terminal:
 ```bash
 python -m run_db
 ```
-4. Run the server by running the following command in the terminal:
+You can use the flag -d to delete the database and tables before creating new ones.
+
+5. Run the server by running the following command in the terminal:
 ```bash
 python -m run_server
 ```
