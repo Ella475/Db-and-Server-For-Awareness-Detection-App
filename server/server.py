@@ -21,9 +21,11 @@ def users():
         if not username:
             return jsonify({"response": False, "error": "Bad request"}), 400
 
+        is_supervisor = request.args.get('supervisor') is not None
+
         if username and not password:
             db, cursor = connection.get()
-            response = yield_query_result(db, cursor, check_username(username))
+            response = yield_query_result(db, cursor, check_username(username, is_supervisor))
             # if user exists, return True
             if response:
                 return jsonify({"response": True})
@@ -33,7 +35,7 @@ def users():
         # check if username and password are provided
         elif username and password:
             db, cursor = connection.get()
-            response = yield_query_result(db, cursor, check_user(username, password))
+            response = yield_query_result(db, cursor, check_user(username, password, is_supervisor))
             # if user password is correct, return user id
             if response:
                 response_str = str(response[0]['id'])
@@ -50,9 +52,12 @@ def users():
             return jsonify({"response": False, "error": "Bad request"}), 400
 
         if 'username' in request_as_dict and 'password' in request_as_dict:
-            response = execute_query(db, cursor, insert_user(**request_as_dict))
+            username = request_as_dict.get("username")
+            password = request_as_dict.get("password")
+            is_supervisor = 'supervisor' in request_as_dict
+            response = execute_query(db, cursor, insert_user(username, password, is_supervisor))
             if response:
-                response = yield_query_result(db, cursor, get_user_id_by_username(request_as_dict.get("username")))
+                response = yield_query_result(db, cursor, get_user_id_by_username(username, is_supervisor))
                 if response:
                     response_str = str(response[0]['id'])
                     return jsonify({"response": response_str})
@@ -126,6 +131,47 @@ def drives_data():
 
         db, cursor = connection.get()
         response = execute_query(db, cursor, insert_drive_data(**request_as_dict))
+        print(response)
+        if response:
+            # return all drive data
+            response_str = str(response)
+            return jsonify({"response": response_str})
+        # if user does not exist, return False
+        else:
+            return jsonify({"response": False})
+
+
+@app.route('/supervisors', methods=['GET', 'POST'])
+def supervisors():
+    if request.method == 'GET':
+        if 'supervisor_id' in request.args:
+            arg = request.args.get('supervisor_id')
+            func = get_supervised_usernames
+        else:
+            return jsonify({"response": False, "error": "Bad request"}), 400
+
+        db, cursor = connection.get()
+        response = yield_query_result(db, cursor, func(arg))
+        if response:
+            usernames = [f"{user_dict['id']}:{user_dict['username']}" for user_dict in response]
+            response_str = str(usernames)
+            return jsonify({"success": True, "response": response_str})
+        # if user does not exist, return False
+        else:
+            return jsonify({"success": False})
+
+    if request.method == 'POST':
+        # get driveId, awareness_percentage, asleep, head_pose from request
+        request_as_dict = request.get_json(force=True)
+        if 'supervisor_id' not in request_as_dict or 'username' not in request_as_dict:
+            return jsonify({"response": False, "error": "Bad request"}), 400
+
+        supervisor_id = request_as_dict.get("supervisor_id")
+
+        db, cursor = connection.get()
+
+        user_id = yield_query_result(db, cursor, check_username(request_as_dict.get("username")))[0]['id']
+        response = execute_query(db, cursor, insert_supervised_user(supervisor_id, user_id))
         print(response)
         if response:
             # return all drive data
