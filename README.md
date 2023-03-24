@@ -5,9 +5,9 @@ The app, which can be accessed through its GitHub repository [here](https://gith
 The database is created and managed using Python code.
 
 ## Installation
-1. Download MySQL 
-2. Change the username and password in the credentials.json to your username and password in MySQL.
-3. Install requirements:
+1. Download MySQL.
+2. Edit the credentials.json file to contain your MySQL username and password.
+3. Install the necessary requirements by running the following command in your terminal:
 ```bash
 pip install -r requirements.txt
 ```
@@ -15,15 +15,15 @@ pip install -r requirements.txt
 ```bash
 python -m run_db
 ```
-You can use the flag -d to delete the database and tables before creating new ones.
+You can delete the existing database and tables using the -d flag before creating new ones.
 
 5. Run the server by running the following command in the terminal:
 ```bash
 python -m run_server
 ```
 ## Usage
-The server is used by the app to store and retrieve data from the database. 
-The server is also used to process the data before and after it is stored in the database.
+The server is utilized by the app to store and retrieve data from the database.</br> 
+The server is also responsible for processing the data before and after it is saved in the database.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
